@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Celebration ❤️</title>
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:radial-gradient(circle,#ff758c,#ff7eb3);
+    font-family:Arial;
+    text-align:center;
+    color:white;
+}
+
+.heart{
+    position:absolute;
+    color:red;
+    font-size:20px;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    from{transform:translateY(-10vh);}
+    to{transform:translateY(110vh);}
+}
+
+#caricature{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:180px;
+    background:radial-gradient(circle,#ff4d6d,#ff99ac);
+    opacity:0;
+    transition:opacity 2s ease-in-out;
+}
+
+#textOverlay{
+    position:absolute;
+    top:20%;
+    width:100%;
+    font-size:60px;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div id="caricature">
+    <div id="textOverlay">CELEBRATION YAYYYY!! 💖🎉</div>
+    👩‍❤️‍👨
+</div>
+
+<script>
+let hearts=[];
+
+function createHearts(){
+    for(let i=0;i<500;i++){
+        const h=document.createElement("div");
+        h.classList.add("heart");
+        h.innerHTML="❤️";
+        h.style.left=Math.random()*100+"vw";
+        h.style.fontSize=(Math.random()*25+15)+"px";
+        h.style.animationDuration=(Math.random()*3+2)+"s";
+        document.body.appendChild(h);
+        hearts.push(h);
+    }
+}
+
+function stopHearts(){
+    hearts.forEach(h=>h.remove());
+}
+
+function showCaricature(){
+    document.getElementById("caricature").style.opacity="1";
+}
+
+createHearts();
+
+setTimeout(()=>{
+    stopHearts();          // stop rain after 5 seconds
+    showCaricature();      // show full page caricature
+},5000);
+</script>
+
+</body>
+</html>
