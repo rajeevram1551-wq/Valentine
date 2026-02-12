@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Celebration ❤️</title>
+<style>
+body{margin:0;overflow:hidden;background:radial-gradient(circle,#ff758c,#ff7eb3);font-family:Arial;text-align:center;color:white;}
+h1{position:absolute;top:40%;width:100%;font-size:60px;opacity:0;transition:opacity 2s;}
+h2{position:absolute;top:55%;width:100%;font-size:28px;opacity:0;transition:opacity 2s;}
+.heart{position:absolute;color:red;font-size:20px;animation:fall linear infinite;}
+@keyframes fall{from{transform:translateY(-10vh);}to{transform:translateY(110vh);}}
+#couple{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:250px;opacity:0;transition:opacity 2s;}
+</style>
+</head>
+<body>
+
+<h1 id="celebration">CELEBRATION YAYYYY!! 💖🎉</h1>
+<h2 id="subtext">You said YES! Best decision ever 😍</h2>
+<img id="couple" src="https://cdn.pixabay.com/photo/2017/01/31/13/14/cartoon-2025634_1280.png">
+
+<script>
+function createHearts(){for(let i=0;i<300;i++){const h=document.createElement("div");h.classList.add("heart");h.innerHTML="❤️";h.style.left=Math.random()*100+"vw";h.style.fontSize=(Math.random()*20+15)+"px";h.style.animationDuration=(Math.random()*3+2)+"s";document.body.appendChild(h);}}
+function reveal(){document.getElementById("celebration").style.opacity="1";document.getElementById("subtext").style.opacity="1";document.getElementById("couple").style.opacity="1";}
+createHearts();setTimeout(reveal,2000);
+</script>
+
+</body>
+</html>
