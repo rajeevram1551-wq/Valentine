@@ -6,55 +6,101 @@
     <title>Be My Valentine?</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #fff5f5; /* Light blush pink */
-            font-family: 'Comic Sans MS', cursive;
+            justify-content: flex-end; /* Keeps buttons toward the bottom */
+            /* SET IMAGE AS BACKGROUND */
+            background: url('image.png') no-repeat center center fixed; 
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
         }
-        img {
-            width: 250px;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+
+        /* Overlay to make text and buttons pop against the background */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1); /* Subtle tint */
+            z-index: -1;
         }
-        .buttons {
-            margin-top: 30px;
+
+        .button-container {
+            margin-bottom: 100px; /* Adjust height of buttons from bottom */
+            display: flex;
+            align-items: center;
+            gap: 50px;
         }
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+
+        /* --- HEART WITH ARROW "YES" BUTTON --- */
         #yesBtn {
-            background-color: #ff4d4d;
+            background-color: #ff4d6d;
             color: white;
-            margin-right: 10px;
+            width: 100px;
+            height: 90px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
+            transform: scale(3);
+            transition: 0.3s;
+            z-index: 10;
         }
+
+        /* The Arrow Line */
+        .arrow {
+            position: absolute;
+            width: 140px;
+            height: 5px;
+            background: #4a302a;
+            transform: rotate(-20deg);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* --- BROKEN HEART "NO" BUTTON --- */
         #noBtn {
-            background-color: #ddd;
-            position: absolute; /* Needed for the "run away" effect */
+            background-color: #fff;
+            color: #555;
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            position: absolute; /* Essential for moving */
+            transition: 0.1s ease;
         }
+
+        #noBtn::before {
+            content: "💔 ";
+        }
+
     </style>
 </head>
 <body>
 
-    <img src="your-image.png" alt="Valentine Illustration">
-    <h1>Will you be my Valentine?</h1>
+    <div class="overlay"></div>
 
-    <div class="buttons">
-        <button id="yesBtn" onclick="celebrate()">Yes!</button>
+    <div class="button-container">
+        <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+            <div class="arrow"></div>
+            <button id="yesBtn" onclick="celebrate()">YES</button>
+        </div>
+
         <button id="noBtn" onmouseover="moveButton()">No</button>
     </div>
 
     <script>
         function moveButton() {
             const btn = document.getElementById('noBtn');
+            // Logic to keep button within the visible screen
             const x = Math.random() * (window.innerWidth - btn.offsetWidth);
             const y = Math.random() * (window.innerHeight - btn.offsetHeight);
             btn.style.left = x + 'px';
@@ -62,8 +108,14 @@
         }
 
         function celebrate() {
-            alert("Yay! Best Valentine ever! ❤️");
-            // You can add confetti code here!
+            // Simple success effect
+            document.body.style.background = "pink";
+            document.body.innerHTML = `
+                <div style="text-align:center; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <h1 style="color: #ff4d6d; font-size: 3rem;">❤️ IT'S A DATE! ❤️</h1>
+                    <p>I knew you couldn't resist!</p>
+                </div>
+            `;
         }
     </script>
 </body>
