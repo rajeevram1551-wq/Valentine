@@ -15,91 +15,88 @@
             justify-content: flex-end; 
             background: url('image.png') no-repeat center center fixed; 
             background-size: cover;
-            font-family: 'Arial Rounded MT Bold', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
 
         .button-group {
             display: flex;
-            gap: 50px;
-            margin-bottom: 120px;
+            gap: 30px;
+            margin-bottom: 100px;
             z-index: 100;
         }
 
-        /* --- BUTTON WRAPPER FOR TEXT OVERLAY --- */
-        .btn-box {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 150px;
-            height: 150px;
-        }
-
-        /* --- YES HEART --- */
-        #yesBtn {
-            background-color: #ff4d6d;
-            width: 100%;
-            height: 100%;
+        /* --- USUAL BUTTON STYLING --- */
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
             border: none;
+            border-radius: 12px;
             cursor: pointer;
-            clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
-            transform: scale(5); /* Large heart */
-            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.1s, background-color 0.3s;
         }
 
-        /* --- NO BROKEN HEART --- */
-        #noContainer {
-            position: absolute;
-            transition: 0.1s ease;
-            cursor: pointer;
+        #yesBtn {
+            background-color: #2ecc71; /* Green for Yes */
+            color: white;
+        }
+
+        #yesBtn:hover {
+            background-color: #27ae60;
+            transform: scale(1.1);
         }
 
         #noBtn {
-            background: none;
-            border: none;
-            font-size: 7rem;
-            color: #555;
-            line-height: 1;
-            padding: 0;
-            cursor: pointer;
+            background-color: #e74c3c; /* Red for No */
+            color: white;
+            position: relative;
         }
 
-        .text-over {
-            position: absolute;
-            pointer-events: none; 
-            font-weight: bold;
-            text-align: center;
+        /* --- THE MOVING CONTAINER --- */
+        #noWrapper {
+            position: relative;
+            display: inline-block;
         }
 
-        /* Funny Message Styling */
+        /* Funny Message Styling - Positioned over the No button */
         #funnyText {
-            position: fixed;
-            top: 15%;
-            color: #d63384;
-            font-size: 2.2rem;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px 30px;
-            border-radius: 50px;
+            position: absolute;
+            bottom: 120%; /* Sits above the button */
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            color: #fff;
+            background: #333;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
             display: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border: 2px solid #ff4d6d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Small triangle for the speech bubble */
+        #funnyText::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
         }
     </style>
 </head>
 <body>
 
-    <div id="funnyText">Nice try! 😉</div>
-
     <div class="button-group">
-        <div class="btn-box">
-            <button id="yesBtn" onclick="celebrate()"></button>
-            <span class="text-over" style="color: white; font-size: 1.2rem; top: 35%;">Yes</span>
-        </div>
+        <button id="yesBtn" class="btn" onclick="celebrate()">Yes</button>
 
-        <div id="noContainer" class="btn-box" onmouseover="moveButton()">
-            <button id="noBtn">💔</button>
-            <span class="text-over" style="color: white; font-size: 1rem; top: 45%;">No</span>
+        <div id="noWrapper">
+            <div id="funnyText">Catch me first! 🏃‍♂️</div>
+            <button id="noBtn" class="btn" onmouseover="moveButton()" onclick="moveButton()">No</button>
         </div>
     </div>
 
@@ -110,26 +107,27 @@
             "Fight Bro! 🥊",
             "I’m shy... 👉👈",
             "Try yes, it may listen to you! ✨",
-            "Wrong way! 🚫",
-            "Not today! 🙅‍♂️",
-            "Are you even trying? 😂",
-            "Oops! Missed again! 💨",
-            "Is that all you got? 🤨",
-            "Stop it! 😤" // The angry one
+            "Wrong button! 😂",
+            "Try again! 🔄",
+            "One angry emoji 😤",
+            "Almost had it! 💨",
+            "No is not an option! 🚫"
         ];
 
         function moveButton() {
-            const container = document.getElementById('noContainer');
+            const wrapper = document.getElementById('noWrapper');
             const funnyBox = document.getElementById('funnyText');
             
-            // Randomly scatter the "No" button
-            const x = Math.random() * (window.innerWidth - 150);
-            const y = Math.random() * (window.innerHeight - 150);
-            container.style.left = x + 'px';
-            container.style.top = y + 'px';
-            container.style.position = 'fixed';
+            // Generate random positions
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 200);
+            
+            // Move the entire wrapper (button + text)
+            wrapper.style.position = 'fixed';
+            wrapper.style.left = x + 'px';
+            wrapper.style.top = y + 'px';
 
-            // Show and update funny text
+            // Show and update funny text over the button
             funnyBox.style.display = 'block';
             const randomPhrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
             funnyBox.innerText = randomPhrase;
@@ -137,12 +135,13 @@
 
         function celebrate() {
             document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#fff0f3; text-align:center;">
-                    <h1 style="color:#ff4d6d; font-size:5rem; margin-bottom:10px;">💖 YES! 💖</h1>
-                    <p style="font-size:2rem; color:#5d4037;">I knew you'd give in eventually! 🥰</p>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:white; text-align:center;">
+                    <h1 style="color:#2ecc71; font-size:4rem;">SUCCESS! ✅</h1>
+                    <p style="font-size:1.8rem;">See you on Valentine's Day! ❤️</p>
                 </div>
             `;
         }
     </script>
 </body>
 </html>
+
