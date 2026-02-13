@@ -2,203 +2,184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Be My Valentine?</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: url('image.png') no-repeat center center fixed;
-        background-size: cover;
-        font-family: 'Arial Rounded MT Bold', sans-serif;
-        overflow: hidden;
-    }
+html, body {
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow:hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+}
 
-    .button-container {
-        display: flex;
-        gap: 120px;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-    }
+/* FULLSCREEN IMAGE */
+.bg {
+    position:fixed;
+    inset:0;
+    background:url("image.jpg") center center / cover no-repeat;
+}
 
-    /* -------- HEART BUTTON -------- */
-    .heart-btn {
-        position: relative;
-        width: 120px;
-        height: 110px;
-        border: none;
-        cursor: pointer;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transform: rotate(-45deg);
-        transition: transform 0.2s ease;
-    }
+/* DARK SOFT OVERLAY FOR TEXT VISIBILITY */
+.overlay {
+    position:fixed;
+    inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05));
+}
 
-    .heart-btn span {
-        transform: rotate(45deg);
-        color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
-        z-index: 2;
-    }
+/* BUTTON AREA (BOTTOM LIKE STORY REACTION) */
+.controls {
+    position:fixed;
+    bottom:8vh;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    z-index:10;
+}
 
-    .heart-btn::before,
-    .heart-btn::after {
-        content: "";
-        position: absolute;
-        width: 120px;
-        height: 110px;
-        background: inherit;
-        border-radius: 50%;
-    }
+/* HEART BUTTON */
+.heart {
+    width:85px;
+    height:85px;
+    position:relative;
+    border:none;
+    cursor:pointer;
+    transform:rotate(-45deg);
+    transition:transform .15s ease;
+}
 
-    .heart-btn::before {
-        top: -55px;
-        left: 0;
-    }
+.heart span {
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(45deg);
+    color:white;
+    font-weight:700;
+    font-size:18px;
+}
 
-    .heart-btn::after {
-        left: 55px;
-        top: 0;
-    }
+.heart::before,
+.heart::after{
+    content:"";
+    position:absolute;
+    width:85px;
+    height:85px;
+    background:inherit;
+    border-radius:50%;
+}
 
-    #yesBtn { background-color: #2ecc71; }
-    #noBtn { background-color: #e74c3c; }
+.heart::before{ top:-42px; left:0;}
+.heart::after{ left:42px; top:0;}
 
-    .heart-btn:hover {
-        transform: rotate(-45deg) scale(1.1);
-    }
+#yes{ background:#ff4d6d;}
+#no{ background:#5a5a5a;}
 
-    /* No Button Wrapper */
-    #noWrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        transition: 0.1s ease;
-    }
+.heart:active{
+    transform:rotate(-45deg) scale(.9);
+}
 
-    #funnyText {
-        margin-bottom: 20px;
-        color: #e74c3c;
-        font-size: 0.8rem;
-        font-weight: bold;
-        text-align: center;
-        min-height: 20px;
-        text-shadow: 1px 1px 2px white;
-    }
+/* Funny message */
+#msg{
+    position:fixed;
+    bottom:20vh;
+    width:100%;
+    text-align:center;
+    color:white;
+    font-weight:600;
+    text-shadow:0 2px 8px rgba(0,0,0,.6);
+    font-size:18px;
+    z-index:9;
+}
 
-    /* Success Screen */
-    .success-content {
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        height:100vh;
-        width:100vw;
-        background:#fff0f3;
-        text-align:center;
-    }
+/* SUCCESS SCREEN */
+.success{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    text-align:center;
+}
 
-    /* Floating hearts animation */
-    @keyframes floatHearts {
-        0% { transform: translateY(0) scale(1); opacity: 1; }
-        100% { transform: translateY(-300px) scale(1.5); opacity: 0; }
-    }
+/* Floating hearts */
+@keyframes float {
+    0%{ transform:translateY(0) scale(1); opacity:1;}
+    100%{ transform:translateY(-120vh) scale(1.6); opacity:0;}
+}
 
-    .floating-heart {
-        position: fixed;
-        bottom: 0;
-        font-size: 24px;
-        animation: floatHearts 3s linear forwards;
-        pointer-events: none;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 600px) {
-        .button-container {
-            gap: 60px;
-        }
-        .heart-btn {
-            transform: rotate(-45deg) scale(0.8);
-        }
-    }
+.floatHeart{
+    position:fixed;
+    bottom:-40px;
+    font-size:24px;
+    animation:float 4s linear forwards;
+}
 </style>
 </head>
 
 <body>
 
-<div class="button-container">
-    <div>
-        <button id="yesBtn" class="heart-btn" onclick="celebrate()">
-            <span>Yes</span>
-        </button>
-    </div>
+<div class="bg"></div>
+<div class="overlay"></div>
+<div id="msg"></div>
 
-    <div id="noWrapper" onmouseover="moveButton()">
-        <div id="funnyText"></div>
-        <button id="noBtn" class="heart-btn">
-            <span>No</span>
-        </button>
-    </div>
+<div class="controls">
+    <button id="yes" class="heart"><span>YES</span></button>
+    <button id="no" class="heart"><span>NO</span></button>
 </div>
 
 <script>
-    const funnyPhrases = [
-        "Nice try 😉",
-        "Catch me first 🏃‍♂️",
-        "Fight Bro 🥊",
-        "I’m shy 👉👈",
-        "Try Yes! ✨",
-        "Wrong way 😂",
-        "Almost 💨",
-        "No chance 🚫",
-        "Keep trying 😜"
-    ];
+const phrases = [
+"Are you sure? 😌",
+"Think again ❤️",
+"Try the other one 👉",
+"I'll wait 🥺",
+"Hehe nope 😜",
+"Wrong choice 😆",
+"Almost 💕"
+];
 
-    function moveButton() {
-        const wrapper = document.getElementById('noWrapper');
-        const funnyBox = document.getElementById('funnyText');
+const noBtn = document.getElementById("no");
+const msg = document.getElementById("msg");
 
-        const wrapperWidth = wrapper.offsetWidth;
-        const wrapperHeight = wrapper.offsetHeight;
+/* MOBILE FRIENDLY ESCAPE */
+noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("click", moveNo);
 
-        const x = Math.random() * (window.innerWidth - wrapperWidth);
-        const y = Math.random() * (window.innerHeight - wrapperHeight);
+function moveNo(){
+    const x = Math.random()*70 + 10;
+    const y = Math.random()*60 + 10;
 
-        wrapper.style.position = 'fixed';
-        wrapper.style.left = x + 'px';
-        wrapper.style.top = y + 'px';
+    noBtn.style.position="fixed";
+    noBtn.style.left=x+"vw";
+    noBtn.style.top=y+"vh";
 
-        const phrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
-        funnyBox.innerText = phrase;
+    msg.innerText = phrases[Math.floor(Math.random()*phrases.length)];
+}
+
+/* YES PRESSED */
+document.getElementById("yes").onclick = ()=>{
+    document.body.innerHTML=` 
+    <div class="success">
+        <h1 style="font-size:42px;">💖 YAY 💖</h1>
+        <p style="font-size:20px;">You are my Valentine now 🥰</p>
+    </div>`;
+
+    for(let i=0;i<40;i++){
+        const h=document.createElement("div");
+        h.className="floatHeart";
+        h.style.left=Math.random()*100+"vw";
+        h.style.fontSize=(20+Math.random()*30)+"px";
+        h.innerText="💗";
+        document.body.appendChild(h);
     }
-
-    function celebrate() {
-        document.body.innerHTML = `
-            <div class="success-content">
-                <h1 style="color:#e91e63; font-size:3rem; margin:0;">💖 YES! 💖</h1>
-                <p style="font-size:1.5rem; color:#5d4037;">It's a date! See you soon! 🥰</p>
-            </div>
-        `;
-
-        for (let i = 0; i < 30; i++) {
-            const heart = document.createElement("div");
-            heart.className = "floating-heart";
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.fontSize = (20 + Math.random() * 20) + "px";
-            heart.innerText = "💖";
-            document.body.appendChild(heart);
-        }
-    }
+};
 </script>
 
 </body>
