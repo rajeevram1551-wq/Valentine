@@ -13,9 +13,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-end; 
-            /* Ensure your image is named image.png in the same folder */
-            background: url('image.png') no-repeat center center fixed; 
-            background-size: cover;
+            /* Moves image up by adjusting background-position to 50% horizontal and 20% vertical */
+            background: url('image.png') no-repeat center 20% fixed; 
+            background-size: contain; /* Using contain ensures the full artwork is visible */
+            background-color: #ffffff;
             font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
         }
@@ -23,7 +24,7 @@
         .button-group {
             display: flex;
             gap: 80px;
-            margin-bottom: 120px;
+            margin-bottom: 80px; /* Anchors buttons at the very bottom */
             z-index: 100;
         }
 
@@ -39,9 +40,8 @@
             color: white;
             font-weight: bold;
             font-size: 1.2rem;
-            /* Creates the heart shape */
             clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
-            transform: scale(4);
+            transform: scale(3.5);
             transition: background-color 0.3s;
         }
 
@@ -53,7 +53,6 @@
             background-color: #e74c3c; /* Red Heart */
         }
 
-        /* --- THE MOVING CONTAINER (Heart + Text) --- */
         #noWrapper {
             position: relative;
             display: flex;
@@ -63,16 +62,16 @@
             transition: 0.1s ease;
         }
 
-        /* Funny Message - Transparent background */
+        /* Transparent Funny Text */
         #funnyText {
-            margin-bottom: 40px; 
+            margin-bottom: 30px; 
             white-space: nowrap;
             color: #e74c3c;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             text-align: center;
-            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9);
-            min-height: 2.5rem;
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 1);
+            min-height: 2.2rem;
         }
     </style>
 </head>
@@ -80,7 +79,7 @@
 
     <div class="button-group">
         <div style="display:flex; flex-direction:column; align-items:center;">
-            <div style="height:2.5rem; margin-bottom:40px;"></div> 
+            <div style="height:2.2rem; margin-bottom:30px;"></div> 
             <button id="yesBtn" class="heart-btn" onclick="celebrate()">Yes</button>
         </div>
 
@@ -98,8 +97,7 @@
             "I’m shy... 👉👈",
             "Try yes, it may listen to you! ✨",
             "Wrong way! 😂",
-            "😤", /* Pure emoji as requested */
-            "I Dare you 😡"
+            "😤", 
             "Almost! 💨",
             "No chance! 🚫",
             "Keep trying! 😜"
@@ -109,7 +107,6 @@
             const wrapper = document.getElementById('noWrapper');
             const funnyBox = document.getElementById('funnyText');
             
-            // Randomly move within screen boundaries
             const x = Math.random() * (window.innerWidth - 250);
             const y = Math.random() * (window.innerHeight - 250);
             
@@ -117,7 +114,6 @@
             wrapper.style.left = x + 'px';
             wrapper.style.top = y + 'px';
 
-            // Show a random phrase
             const phrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
             funnyBox.innerText = phrase;
         }
@@ -125,8 +121,8 @@
         function celebrate() {
             document.body.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#fff0f3; text-align:center;">
-                    <h1 style="color:#2ecc71; font-size:5rem;">💖 SUCCESS! 💖</h1>
-                    <p style="font-size:2rem; color:#5d4037;">I knew you'd pick the green heart! 🥰</p>
+                    <h1 style="color:#2ecc71; font-size:4rem;">💖 MISSION ACCOMPLISHED! 💖</h1>
+                    <p style="font-size:2rem; color:#5d4037;">Can't wait for Valentine's Day! 🥰</p>
                 </div>
             `;
         }
