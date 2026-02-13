@@ -10,27 +10,26 @@
             padding: 0;
             height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end; 
-            /* Moves image up by adjusting background-position to 50% horizontal and 20% vertical */
-            background: url('image.png') no-repeat center 20% fixed; 
-            background-size: contain; /* Using contain ensures the full artwork is visible */
+            align-items: center; /* Vertical center */
+            justify-content: center; /* Horizontal center */
+            background: url('image.png') no-repeat center center fixed; 
+            background-size: contain;
             background-color: #ffffff;
             font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
         }
 
-        .button-group {
+        .button-container {
             display: flex;
-            gap: 80px;
-            margin-bottom: 80px; /* Anchors buttons at the very bottom */
+            gap: 100px;
+            align-items: center;
+            justify-content: center;
             z-index: 100;
         }
 
         /* --- HEART SHAPE STYLE --- */
         .heart-btn {
-            width: 100px;
+            width: 100px; 
             height: 90px;
             border: none;
             cursor: pointer;
@@ -39,47 +38,48 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem; /* Text size inside heart */
             clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
-            transform: scale(3.5);
-            transition: background-color 0.3s;
+            transform: scale(4); /* Scale up the shape */
+            transition: background-color 0.3s, transform 0.2s;
         }
 
-        #yesBtn {
-            background-color: #2ecc71; /* Green Heart */
-        }
+        #yesBtn { background-color: #2ecc71; padding-bottom: 5px; }
+        #noBtn { background-color: #e74c3c; padding-bottom: 5px; }
 
-        #noBtn {
-            background-color: #e74c3c; /* Red Heart */
-        }
-
+        /* The wrapper for No button and its text */
         #noWrapper {
-            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
+            width: 120px;
             transition: 0.1s ease;
         }
 
-        /* Transparent Funny Text */
+        /* --- TINY FUNNY TEXT --- */
         #funnyText {
-            margin-bottom: 30px; 
-            white-space: nowrap;
+            margin-bottom: 45px; /* Gap above the heart */
             color: #e74c3c;
-            font-size: 1.8rem;
+            font-size: 0.75rem; /* Very small font */
             font-weight: bold;
             text-align: center;
-            text-shadow: 2px 2px 5px rgba(255, 255, 255, 1);
-            min-height: 2.2rem;
+            width: 150px;
+            text-shadow: 1px 1px 2px white;
+            min-height: 1rem;
+        }
+
+        /* Success Screen Styling */
+        .success-content {
+            display:flex; flex-direction:column; align-items:center; justify-content:center; 
+            height:100vh; width: 100vw; background:#fff0f3; text-align:center;
         }
     </style>
 </head>
 <body>
 
-    <div class="button-group">
+    <div class="button-container">
         <div style="display:flex; flex-direction:column; align-items:center;">
-            <div style="height:2.2rem; margin-bottom:30px;"></div> 
+            <div style="height:1rem; margin-bottom:45px;"></div> 
             <button id="yesBtn" class="heart-btn" onclick="celebrate()">Yes</button>
         </div>
 
@@ -95,7 +95,7 @@
             "Catch me first! 🏃‍♂️",
             "Fight Bro! 🥊",
             "I’m shy... 👉👈",
-            "Try yes, it may listen to you! ✨",
+            "Try yes! ✨",
             "Wrong way! 😂",
             "😤", 
             "Almost! 💨",
@@ -107,8 +107,9 @@
             const wrapper = document.getElementById('noWrapper');
             const funnyBox = document.getElementById('funnyText');
             
-            const x = Math.random() * (window.innerWidth - 250);
-            const y = Math.random() * (window.innerHeight - 250);
+            // Random scatter
+            const x = Math.max(50, Math.random() * (window.innerWidth - 200));
+            const y = Math.max(50, Math.random() * (window.innerHeight - 200));
             
             wrapper.style.position = 'fixed';
             wrapper.style.left = x + 'px';
@@ -120,9 +121,9 @@
 
         function celebrate() {
             document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#fff0f3; text-align:center;">
-                    <h1 style="color:#2ecc71; font-size:4rem;">💖 MISSION ACCOMPLISHED! 💖</h1>
-                    <p style="font-size:2rem; color:#5d4037;">Can't wait for Valentine's Day! 🥰</p>
+                <div class="success-content">
+                    <h1 style="color:#2ecc71; font-size:3.5rem; margin:0;">💖 YES! 💖</h1>
+                    <p style="font-size:1.5rem; color:#5d4037;">It's a date! See you soon! 🥰</p>
                 </div>
             `;
         }
