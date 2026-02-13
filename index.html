@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine?</title>
 
+<!-- Handwritten Romantic Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 <style>
 html, body{
     margin:0;
@@ -40,10 +43,14 @@ html, body{
     color:white;
 }
 
+/* Handwritten Title */
 h1{
-    font-size:3rem;
+    font-family: 'Great Vibes', cursive;
+    font-size:4.5rem;
+    font-weight:normal;
     margin-bottom:60px;
-    text-shadow:0 0 20px rgba(0,0,0,0.6);
+    letter-spacing:2px;
+    text-shadow:0 0 25px rgba(0,0,0,0.7);
 }
 
 /* Buttons Row */
@@ -152,7 +159,7 @@ h1{
 
 <script>
 
-/* Expanded Funny Texts */
+/* Funny Texts */
 const funnyPhrases = [
     "Nice try! 😉",
     "Catch me first! 🏃‍♂️",
@@ -196,7 +203,6 @@ function moveNo(){
     noWrapper.style.left=x+"px";
     noWrapper.style.top=y+"px";
 
-    /* Prevent immediate repetition */
     let index;
     do {
         index = Math.floor(Math.random() * funnyPhrases.length);
@@ -210,7 +216,9 @@ function moveNo(){
 document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="success">
-            <h1 style="font-size:3rem;color:#d6336c;margin:0;">💖 YES! 💖</h1>
+            <h1 style="font-family:'Great Vibes', cursive; font-size:4rem; color:#d6336c; margin:0;">
+                You Said Yes 💖
+            </h1>
             <p style="font-size:1.5rem;color:#6d2e46;margin-top:15px;">
                 You just made my day unforgettable 🥰
             </p>
