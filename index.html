@@ -1,135 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Kittu ❤️</title>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-
-<style>
-body{
-    margin:0;
-    height:100vh;
-    font-family:'Patrick Hand', cursive;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(to bottom right,#ffdde1,#ee9ca7);
-    overflow:hidden;
-    text-align:center;
-}
-
-/* Soft floating hearts background */
-body::before{
-    content:"❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️";
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    font-size:40px;
-    opacity:0.07;
-    line-height:100px;
-    word-spacing:40px;
-    pointer-events:none;
-}
-
-.title{
-    font-size:60px;
-    margin-bottom:20px;
-}
-
-.image-container img{
-    width:350px;
-    max-width:90%;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    margin-bottom:30px;
-}
-
-button{
-    font-family:'Patrick Hand', cursive;
-    font-size:40px;
-    padding:15px 40px;
-    margin:20px;
-    border:4px solid #333;
-    background:white;
-    cursor:pointer;
-}
-
-#yesBtn{color:#1f77ff;}
-#noBtn{
-    color:#ff5722;
-    position:absolute;
-}
-
-.funny-text{
-    position:absolute;
-    font-size:28px;
-    pointer-events:none;
-    font-weight:bold;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fff5f5; /* Light blush pink */
+            font-family: 'Comic Sans MS', cursive;
+        }
+        img {
+            width: 250px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .buttons {
+            margin-top: 30px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #yesBtn {
+            background-color: #ff4d4d;
+            color: white;
+            margin-right: 10px;
+        }
+        #noBtn {
+            background-color: #ddd;
+            position: absolute; /* Needed for the "run away" effect */
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="title">Will You ❤️<br>Be My Valentine?</div>
+    <img src="your-image.png" alt="Valentine Illustration">
+    <h1>Will you be my Valentine?</h1>
 
-<div class="image-container">
-    <img src="proposal.png" alt="Romantic Proposal">
-</div>
+    <div class="buttons">
+        <button id="yesBtn" onclick="celebrate()">Yes!</button>
+        <button id="noBtn" onmouseover="moveButton()">No</button>
+    </div>
 
-<div id="funnyText" class="funny-text"></div>
+    <script>
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
 
-<button id="yesBtn" onclick="sayYes()">Yes</button>
-<button id="noBtn">No</button>
-
-<script>
-const noBtn=document.getElementById("noBtn");
-const funnyText=document.getElementById("funnyText");
-
-const funnyMessages=[
-"Nice try 😜",
-"Catch me first!",
-"Nope nope 🙈",
-"Try Yes 😏",
-"Missed again 😂"
-];
-
-function randomMessage(){
-    funnyText.textContent=funnyMessages[Math.floor(Math.random()*funnyMessages.length)];
-    positionFunnyText();
-}
-
-function positionFunnyText(){
-    const r=noBtn.getBoundingClientRect();
-    funnyText.style.left=(r.left+r.width/2-funnyText.offsetWidth/2)+"px";
-    funnyText.style.top=(r.top-40)+"px";
-}
-
-function moveBtn(){
-    const maxX=window.innerWidth-noBtn.offsetWidth;
-    const maxY=window.innerHeight-noBtn.offsetHeight;
-    noBtn.style.left=Math.random()*maxX+"px";
-    noBtn.style.top=Math.random()*maxY+"px";
-    setTimeout(positionFunnyText,10);
-}
-
-noBtn.addEventListener("mouseover",()=>{randomMessage();moveBtn();});
-noBtn.addEventListener("click",e=>{e.preventDefault();randomMessage();moveBtn();});
-
-function sayYes(){
-    window.location.href="yes.html";
-}
-
-setTimeout(()=>{
-    noBtn.style.left="55%";
-    noBtn.style.top="75%";
-},100);
-
-window.addEventListener("resize",positionFunnyText);
-</script>
-
+        function celebrate() {
+            alert("Yay! Best Valentine ever! ❤️");
+            // You can add confetti code here!
+        }
+    </script>
 </body>
 </html>
