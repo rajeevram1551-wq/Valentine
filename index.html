@@ -12,108 +12,134 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end; /* Keeps buttons toward the bottom */
-            /* SET IMAGE AS BACKGROUND */
+            justify-content: flex-end; 
             background: url('image.png') no-repeat center center fixed; 
             background-size: cover;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
         }
 
-        /* Overlay to make text and buttons pop against the background */
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1); /* Subtle tint */
-            z-index: -1;
+        .button-group {
+            display: flex;
+            gap: 50px;
+            margin-bottom: 120px;
+            z-index: 100;
         }
 
-        .button-container {
-            margin-bottom: 100px; /* Adjust height of buttons from bottom */
+        /* --- BUTTON WRAPPER FOR TEXT OVERLAY --- */
+        .btn-box {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 50px;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
         }
 
-        /* --- HEART WITH ARROW "YES" BUTTON --- */
+        /* --- YES HEART --- */
         #yesBtn {
             background-color: #ff4d6d;
-            color: white;
-            width: 100px;
-            height: 90px;
+            width: 100%;
+            height: 100%;
             border: none;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
             clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
-            transform: scale(3);
-            transition: 0.3s;
-            z-index: 10;
+            transform: scale(5); /* Large heart */
+            transition: transform 0.2s;
         }
 
-        /* The Arrow Line */
-        .arrow {
+        /* --- NO BROKEN HEART --- */
+        #noContainer {
             position: absolute;
-            width: 140px;
-            height: 5px;
-            background: #4a302a;
-            transform: rotate(-20deg);
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        /* --- BROKEN HEART "NO" BUTTON --- */
-        #noBtn {
-            background-color: #fff;
-            color: #555;
-            padding: 10px 20px;
-            border: 2px solid #ccc;
-            cursor: pointer;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            position: absolute; /* Essential for moving */
             transition: 0.1s ease;
+            cursor: pointer;
         }
 
-        #noBtn::before {
-            content: "💔 ";
+        #noBtn {
+            background: none;
+            border: none;
+            font-size: 7rem;
+            color: #555;
+            line-height: 1;
+            padding: 0;
+            cursor: pointer;
         }
 
+        .text-over {
+            position: absolute;
+            pointer-events: none; 
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Funny Message Styling */
+        #funnyText {
+            position: fixed;
+            top: 15%;
+            color: #d63384;
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 2px solid #ff4d6d;
+        }
     </style>
 </head>
 <body>
 
-    <div class="overlay"></div>
+    <div id="funnyText">Nice try! 😉</div>
 
-    <div class="button-container">
-        <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-            <div class="arrow"></div>
-            <button id="yesBtn" onclick="celebrate()">YES</button>
+    <div class="button-group">
+        <div class="btn-box">
+            <button id="yesBtn" onclick="celebrate()"></button>
+            <span class="text-over" style="color: white; font-size: 1.2rem; top: 35%;">Yes</span>
         </div>
 
-        <button id="noBtn" onmouseover="moveButton()">No</button>
+        <div id="noContainer" class="btn-box" onmouseover="moveButton()">
+            <button id="noBtn">💔</button>
+            <span class="text-over" style="color: white; font-size: 1rem; top: 45%;">No</span>
+        </div>
     </div>
 
     <script>
+        const funnyPhrases = [
+            "Nice try! 😉",
+            "Catch me first! 🏃‍♂️",
+            "Fight Bro! 🥊",
+            "I’m shy... 👉👈",
+            "Try yes, it may listen to you! ✨",
+            "Wrong way! 🚫",
+            "Not today! 🙅‍♂️",
+            "Are you even trying? 😂",
+            "Oops! Missed again! 💨",
+            "Is that all you got? 🤨",
+            "Stop it! 😤" // The angry one
+        ];
+
         function moveButton() {
-            const btn = document.getElementById('noBtn');
-            // Logic to keep button within the visible screen
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+            const container = document.getElementById('noContainer');
+            const funnyBox = document.getElementById('funnyText');
+            
+            // Randomly scatter the "No" button
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            container.style.left = x + 'px';
+            container.style.top = y + 'px';
+            container.style.position = 'fixed';
+
+            // Show and update funny text
+            funnyBox.style.display = 'block';
+            const randomPhrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+            funnyBox.innerText = randomPhrase;
         }
 
         function celebrate() {
-            // Simple success effect
-            document.body.style.background = "pink";
             document.body.innerHTML = `
-                <div style="text-align:center; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    <h1 style="color: #ff4d6d; font-size: 3rem;">❤️ IT'S A DATE! ❤️</h1>
-                    <p>I knew you couldn't resist!</p>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#fff0f3; text-align:center;">
+                    <h1 style="color:#ff4d6d; font-size:5rem; margin-bottom:10px;">💖 YES! 💖</h1>
+                    <p style="font-size:2rem; color:#5d4037;">I knew you'd give in eventually! 🥰</p>
                 </div>
             `;
         }
