@@ -13,90 +13,80 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-end; 
+            /* Ensure your image is named image.png in the same folder */
             background: url('image.png') no-repeat center center fixed; 
             background-size: cover;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
         }
 
         .button-group {
             display: flex;
-            gap: 30px;
-            margin-bottom: 100px;
+            gap: 80px;
+            margin-bottom: 120px;
             z-index: 100;
         }
 
-        /* --- USUAL BUTTON STYLING --- */
-        .btn {
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            font-weight: bold;
+        /* --- HEART SHAPE STYLE --- */
+        .heart-btn {
+            width: 100px;
+            height: 90px;
             border: none;
-            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.1s, background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            /* Creates the heart shape */
+            clip-path: path('M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.06 3.06 6.06 12 14.125 8.94-8.065 12-10.065 12-14.125 0-8.165-10.011-8.967-12-3.568z');
+            transform: scale(4);
+            transition: background-color 0.3s;
         }
 
         #yesBtn {
-            background-color: #2ecc71; /* Green for Yes */
-            color: white;
-        }
-
-        #yesBtn:hover {
-            background-color: #27ae60;
-            transform: scale(1.1);
+            background-color: #2ecc71; /* Green Heart */
         }
 
         #noBtn {
-            background-color: #e74c3c; /* Red for No */
-            color: white;
-            position: relative;
+            background-color: #e74c3c; /* Red Heart */
         }
 
-        /* --- THE MOVING CONTAINER --- */
+        /* --- THE MOVING CONTAINER (Heart + Text) --- */
         #noWrapper {
             position: relative;
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.1s ease;
         }
 
-        /* Funny Message Styling - Positioned over the No button */
+        /* Funny Message - Transparent background */
         #funnyText {
-            position: absolute;
-            bottom: 120%; /* Sits above the button */
-            left: 50%;
-            transform: translateX(-50%);
+            margin-bottom: 40px; 
             white-space: nowrap;
-            color: #fff;
-            background: #333;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 1rem;
-            display: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Small triangle for the speech bubble */
-        #funnyText::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
+            color: #e74c3c;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9);
+            min-height: 2.5rem;
         }
     </style>
 </head>
 <body>
 
     <div class="button-group">
-        <button id="yesBtn" class="btn" onclick="celebrate()">Yes</button>
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div style="height:2.5rem; margin-bottom:40px;"></div> 
+            <button id="yesBtn" class="heart-btn" onclick="celebrate()">Yes</button>
+        </div>
 
-        <div id="noWrapper">
-            <div id="funnyText">Catch me first! 🏃‍♂️</div>
-            <button id="noBtn" class="btn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+        <div id="noWrapper" onmouseover="moveButton()">
+            <div id="funnyText"></div>
+            <button id="noBtn" class="heart-btn">No</button>
         </div>
     </div>
 
@@ -107,41 +97,39 @@
             "Fight Bro! 🥊",
             "I’m shy... 👉👈",
             "Try yes, it may listen to you! ✨",
-            "Wrong button! 😂",
-            "Try again! 🔄",
-            "One angry emoji 😤",
-            "Almost had it! 💨",
-            "No is not an option! 🚫"
+            "Wrong way! 😂",
+            "😤", /* Pure emoji as requested */
+            "I Dare you 😡"
+            "Almost! 💨",
+            "No chance! 🚫",
+            "Keep trying! 😜"
         ];
 
         function moveButton() {
             const wrapper = document.getElementById('noWrapper');
             const funnyBox = document.getElementById('funnyText');
             
-            // Generate random positions
-            const x = Math.random() * (window.innerWidth - 200);
-            const y = Math.random() * (window.innerHeight - 200);
+            // Randomly move within screen boundaries
+            const x = Math.random() * (window.innerWidth - 250);
+            const y = Math.random() * (window.innerHeight - 250);
             
-            // Move the entire wrapper (button + text)
             wrapper.style.position = 'fixed';
             wrapper.style.left = x + 'px';
             wrapper.style.top = y + 'px';
 
-            // Show and update funny text over the button
-            funnyBox.style.display = 'block';
-            const randomPhrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
-            funnyBox.innerText = randomPhrase;
+            // Show a random phrase
+            const phrase = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+            funnyBox.innerText = phrase;
         }
 
         function celebrate() {
             document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:white; text-align:center;">
-                    <h1 style="color:#2ecc71; font-size:4rem;">SUCCESS! ✅</h1>
-                    <p style="font-size:1.8rem;">See you on Valentine's Day! ❤️</p>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#fff0f3; text-align:center;">
+                    <h1 style="color:#2ecc71; font-size:5rem;">💖 SUCCESS! 💖</h1>
+                    <p style="font-size:2rem; color:#5d4037;">I knew you'd pick the green heart! 🥰</p>
                 </div>
             `;
         }
     </script>
 </body>
 </html>
-
