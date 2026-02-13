@@ -11,175 +11,190 @@ html, body {
     padding:0;
     height:100%;
     overflow:hidden;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:'Arial Rounded MT Bold', sans-serif;
+    background:#000;
 }
 
-/* FULLSCREEN IMAGE */
-.bg {
+/* Full Screen Poster */
+.poster{
     position:fixed;
     inset:0;
-    background:url("image.jpg") center center / cover no-repeat;
+    background:url('image.png') center center / cover no-repeat;
 }
 
-/* DARK SOFT OVERLAY FOR TEXT VISIBILITY */
-.overlay {
+/* Controls container */
+.controls{
     position:fixed;
-    inset:0;
-    background:linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05));
-}
-
-/* BUTTON AREA (BOTTOM LIKE STORY REACTION) */
-.controls {
-    position:fixed;
-    bottom:8vh;
+    bottom:12vh;
     width:100%;
     display:flex;
-    justify-content:center;
-    gap:50px;
-    z-index:10;
+    justify-content:space-evenly;
+    align-items:center;
+    pointer-events:none;
 }
 
-/* HEART BUTTON */
-.heart {
-    width:85px;
-    height:85px;
+/* Heart Buttons (auto-fit text) */
+.heart{
     position:relative;
-    border:none;
-    cursor:pointer;
+    padding:10px 18px;
+    background:inherit;
     transform:rotate(-45deg);
-    transition:transform .15s ease;
-}
-
-.heart span {
-    position:absolute;
-    inset:0;
     display:flex;
     align-items:center;
     justify-content:center;
-    transform:rotate(45deg);
-    color:white;
-    font-weight:700;
-    font-size:18px;
+    pointer-events:auto;
+    transition:transform .15s ease;
 }
 
+.heart span{
+    transform:rotate(45deg);
+    color:#fff;
+    font-size:1rem;
+    font-weight:bold;
+    z-index:2;
+    white-space:nowrap;
+}
+
+/* Create heart shape */
 .heart::before,
 .heart::after{
     content:"";
     position:absolute;
-    width:85px;
-    height:85px;
+    width:100%;
+    height:100%;
     background:inherit;
     border-radius:50%;
+    z-index:-1;
 }
 
-.heart::before{ top:-42px; left:0;}
-.heart::after{ left:42px; top:0;}
+.heart::before{
+    top:-50%;
+    left:0;
+}
 
-#yes{ background:#ff4d6d;}
-#no{ background:#5a5a5a;}
+.heart::after{
+    left:50%;
+    top:0;
+}
+
+#yes{ background:#2ecc71; }
+#no{ background:#e74c3c; }
 
 .heart:active{
-    transform:rotate(-45deg) scale(.9);
+    transform:rotate(-45deg) scale(.92);
 }
 
-/* Funny message */
-#msg{
-    position:fixed;
-    bottom:20vh;
-    width:100%;
-    text-align:center;
-    color:white;
-    font-weight:600;
-    text-shadow:0 2px 8px rgba(0,0,0,.6);
-    font-size:18px;
-    z-index:9;
+/* Funny text attached to No */
+#noWrapper{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    pointer-events:auto;
 }
 
-/* SUCCESS SCREEN */
+#funny{
+    position:absolute;
+    bottom:110%;
+    font-size:.85rem;
+    color:#fff;
+    font-weight:bold;
+    text-shadow:0 0 8px black;
+    white-space:nowrap;
+}
+
+/* Success Screen */
 .success{
     position:fixed;
     inset:0;
-    background:#000;
+    background:#fff0f3;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    color:white;
     text-align:center;
 }
 
-/* Floating hearts */
-@keyframes float {
-    0%{ transform:translateY(0) scale(1); opacity:1;}
-    100%{ transform:translateY(-120vh) scale(1.6); opacity:0;}
+/* Floating Hearts */
+@keyframes float{
+    0%{transform:translateY(0);opacity:1;}
+    100%{transform:translateY(-120vh);opacity:0;}
 }
 
 .floatHeart{
     position:fixed;
-    bottom:-40px;
-    font-size:24px;
-    animation:float 4s linear forwards;
+    bottom:-20px;
+    animation:float 3s linear forwards;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
-<div class="overlay"></div>
-<div id="msg"></div>
+<div class="poster"></div>
 
 <div class="controls">
-    <button id="yes" class="heart"><span>YES</span></button>
-    <button id="no" class="heart"><span>NO</span></button>
+    <div id="yes" class="heart"><span>Yes</span></div>
+
+    <div id="noWrapper">
+        <div id="funny"></div>
+        <div id="no" class="heart"><span>No</span></div>
+    </div>
 </div>
 
 <script>
+
 const phrases = [
 "Are you sure? 😌",
-"Think again ❤️",
-"Try the other one 👉",
-"I'll wait 🥺",
-"Hehe nope 😜",
-"Wrong choice 😆",
-"Almost 💕"
+"Think again 😏",
+"Wrong choice 😜",
+"Tap Yes ❤️",
+"I'll keep running 🏃",
+"Hehe nope 😆",
+"Destiny says Yes ✨"
 ];
 
+const noWrapper = document.getElementById("noWrapper");
 const noBtn = document.getElementById("no");
-const msg = document.getElementById("msg");
+const funny = document.getElementById("funny");
 
-/* MOBILE FRIENDLY ESCAPE */
+/* Mobile tap escape */
 noBtn.addEventListener("touchstart", moveNo);
 noBtn.addEventListener("click", moveNo);
 
 function moveNo(){
-    const x = Math.random()*70 + 10;
-    const y = Math.random()*60 + 10;
+    const maxX = window.innerWidth - noWrapper.offsetWidth;
+    const maxY = window.innerHeight - noWrapper.offsetHeight;
 
-    noBtn.style.position="fixed";
-    noBtn.style.left=x+"vw";
-    noBtn.style.top=y+"vh";
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
-    msg.innerText = phrases[Math.floor(Math.random()*phrases.length)];
+    noWrapper.style.position="fixed";
+    noWrapper.style.left=x+"px";
+    noWrapper.style.top=y+"px";
+
+    funny.innerText = phrases[Math.floor(Math.random()*phrases.length)];
 }
 
-/* YES PRESSED */
-document.getElementById("yes").onclick = ()=>{
-    document.body.innerHTML=` 
-    <div class="success">
-        <h1 style="font-size:42px;">💖 YAY 💖</h1>
-        <p style="font-size:20px;">You are my Valentine now 🥰</p>
-    </div>`;
+/* YES click */
+document.getElementById("yes").onclick = () => {
+    document.body.innerHTML = `
+        <div class="success">
+            <h1 style="font-size:3rem;color:#e91e63;margin:0;">💖 YES! 💖</h1>
+            <p style="font-size:1.4rem;color:#5d4037;">You just made me the happiest 🥰</p>
+        </div>
+    `;
 
-    for(let i=0;i<40;i++){
+    for(let i=0;i<30;i++){
         const h=document.createElement("div");
         h.className="floatHeart";
         h.style.left=Math.random()*100+"vw";
-        h.style.fontSize=(20+Math.random()*30)+"px";
-        h.innerText="💗";
+        h.style.fontSize=(18+Math.random()*24)+"px";
+        h.innerText="💖";
         document.body.appendChild(h);
     }
-};
+}
+
 </script>
 
 </body>
