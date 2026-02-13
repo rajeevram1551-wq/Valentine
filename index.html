@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine?</title>
 
 <style>
@@ -10,67 +10,82 @@ html, body{
     margin:0;
     padding:0;
     height:100%;
-    overflow:hidden;
     font-family: 'Georgia', serif;
+    overflow:hidden;
 }
 
-/* Full screen romantic image */
+/* Background Image */
 .poster{
     position:fixed;
     inset:0;
     background:url('image.png') center center / cover no-repeat;
 }
 
-/* Soft dark overlay */
+/* Soft overlay */
 .overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.25);
+    background:rgba(0,0,0,0.35);
 }
 
-/* Buttons container */
-.controls{
-    position:fixed;
-    bottom:14vh;
-    width:100%;
+/* Center content */
+.container{
+    position:relative;
+    height:100vh;
     display:flex;
+    align-items:center;
     justify-content:center;
-    gap:30px;
+    flex-direction:column;
+    text-align:center;
+    color:white;
 }
 
-/* Classic romantic buttons */
+h1{
+    font-size:3rem;
+    margin-bottom:60px;
+    text-shadow:0 0 20px rgba(0,0,0,0.6);
+}
+
+/* Buttons Row */
+.controls{
+    display:flex;
+    gap:50px;
+    align-items:center;
+    justify-content:center;
+}
+
+/* Romantic Buttons */
 .btn{
-    padding:14px 34px;
-    font-size:1.1rem;
-    border-radius:40px;
+    padding:16px 42px;
+    font-size:1.2rem;
+    border-radius:50px;
     border:none;
     font-weight:600;
     letter-spacing:1px;
     cursor:pointer;
     transition:all .3s ease;
-    backdrop-filter: blur(6px);
 }
 
-/* YES button */
+/* Yes */
 #yes{
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     color:white;
-    box-shadow:0 8px 25px rgba(255,118,150,.4);
+    box-shadow:0 10px 30px rgba(255,118,150,.5);
 }
 
-#yes:active{
-    transform:scale(.95);
+#yes:hover{
+    transform:scale(1.05);
 }
 
-/* NO button */
+/* No */
 #no{
-    background:rgba(255,255,255,0.85);
+    background:rgba(255,255,255,0.9);
     color:#b23a48;
-    box-shadow:0 6px 18px rgba(0,0,0,.2);
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
 
-#no:active{
-    transform:scale(.95);
+#no:hover{
+    transform:scale(1.05);
 }
 
 /* No wrapper */
@@ -81,13 +96,13 @@ html, body{
 /* Funny text above No */
 #funny{
     position:absolute;
-    bottom:110%;
+    bottom:120%;
     width:100%;
     text-align:center;
-    font-size:.85rem;
+    font-size:0.95rem;
     color:white;
     font-style:italic;
-    text-shadow:0 0 10px black;
+    text-shadow:0 0 15px black;
     white-space:nowrap;
 }
 
@@ -112,7 +127,7 @@ html, body{
 .floatHeart{
     position:fixed;
     bottom:-20px;
-    animation:float 3s linear forwards;
+    animation:float 4s linear forwards;
 }
 </style>
 </head>
@@ -122,18 +137,22 @@ html, body{
 <div class="poster"></div>
 <div class="overlay"></div>
 
-<div class="controls">
-    <button id="yes" class="btn">Yes</button>
+<div class="container">
+    <h1>Will You Be My Valentine? 💖</h1>
 
-    <div id="noWrapper">
-        <div id="funny"></div>
-        <button id="no" class="btn">No</button>
+    <div class="controls">
+        <button id="yes" class="btn">Yes</button>
+
+        <div id="noWrapper">
+            <div id="funny"></div>
+            <button id="no" class="btn">No</button>
+        </div>
     </div>
 </div>
 
 <script>
 
-/* YOUR EXACT PHRASES */
+/* Expanded Funny Texts */
 const funnyPhrases = [
     "Nice try! 😉",
     "Catch me first! 🏃‍♂️",
@@ -144,18 +163,29 @@ const funnyPhrases = [
     "😤",
     "Almost! 💨",
     "No chance! 🚫",
-    "Keep trying! 😜"
+    "Keep trying! 😜",
+    "Destiny says Yes 😌",
+    "You missed the right button 😏",
+    "Love prefers Yes 💕",
+    "Oops, try again 😆",
+    "That button doesn't work 🤭",
+    "The Yes one is prettier 💖",
+    "Are you sure about that? 😈",
+    "I dare you to press Yes 😎"
 ];
+
+let lastIndex = -1;
 
 const noWrapper = document.getElementById("noWrapper");
 const noBtn = document.getElementById("no");
 const funny = document.getElementById("funny");
 
-/* Move No button on tap */
+/* Move No Button */
+noBtn.addEventListener("mouseover", moveNo);
 noBtn.addEventListener("click", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
 
 function moveNo(){
+
     const maxX = window.innerWidth - noWrapper.offsetWidth;
     const maxY = window.innerHeight - noWrapper.offsetHeight;
 
@@ -166,25 +196,32 @@ function moveNo(){
     noWrapper.style.left=x+"px";
     noWrapper.style.top=y+"px";
 
-    funny.innerText = funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)];
+    /* Prevent immediate repetition */
+    let index;
+    do {
+        index = Math.floor(Math.random() * funnyPhrases.length);
+    } while(index === lastIndex);
+
+    lastIndex = index;
+    funny.innerText = funnyPhrases[index];
 }
 
-/* Yes button */
+/* Yes Button */
 document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="success">
-            <h1 style="font-size:2.8rem;color:#d6336c;margin:0;">💖 YES! 💖</h1>
-            <p style="font-size:1.3rem;color:#6d2e46;margin-top:10px;">
-                It's a date! See you soon 🥰
+            <h1 style="font-size:3rem;color:#d6336c;margin:0;">💖 YES! 💖</h1>
+            <p style="font-size:1.5rem;color:#6d2e46;margin-top:15px;">
+                You just made my day unforgettable 🥰
             </p>
         </div>
     `;
 
-    for(let i=0;i<30;i++){
+    for(let i=0;i<40;i++){
         const h=document.createElement("div");
         h.className="floatHeart";
         h.style.left=Math.random()*100+"vw";
-        h.style.fontSize=(18+Math.random()*26)+"px";
+        h.style.fontSize=(18+Math.random()*28)+"px";
         h.innerText="💖";
         document.body.appendChild(h);
     }
