@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Be My Valentine?</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@ html, body{
     height:100%;
     overflow:hidden;
     font-family:'Georgia', serif;
+    touch-action:manipulation;
 }
 
 /* Background */
@@ -21,50 +22,55 @@ html, body{
     position:fixed;
     inset:0;
     background:url('image.png') center center / cover no-repeat;
+    transition:background-image 0.4s ease-in-out;
 }
 
-/* Slight dark overlay */
 .overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.25);
 }
 
-/* 🎯 Position Buttons Below Faces */
+/* Buttons at 80% */
 .controls{
-    position:absolute;
-    top:68%;          /* <-- Adjust this if needed */
+    position:fixed;
+    top:80%;
     left:50%;
-    transform:translate(-50%, -50%);
+    transform:translate(-50%,-50%);
     display:flex;
-    gap:40px;
+    gap:25px;
 }
 
 /* Buttons */
 .btn{
-    padding:14px 34px;
-    font-size:1.1rem;
-    border-radius:50px;
+    padding:14px 28px;
+    font-size:1rem;
+    border-radius:40px;
     border:none;
     font-weight:600;
+    min-width:110px;
     cursor:pointer;
-    transition:.3s ease;
 }
 
+/* YES glowing pulse */
 #yes{
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     color:white;
-    box-shadow:0 8px 25px rgba(255,118,150,.5);
+    animation:pulseGlow 2s infinite;
 }
 
-#yes:hover{ transform:scale(1.08); }
+@keyframes pulseGlow{
+    0%{ box-shadow:0 0 8px rgba(255,118,150,.6); transform:scale(1);}
+    50%{ box-shadow:0 0 25px rgba(255,118,150,1); transform:scale(1.06);}
+    100%{ box-shadow:0 0 8px rgba(255,118,150,.6); transform:scale(1);}
+}
 
 #no{
-    background:rgba(255,255,255,0.9);
+    background:rgba(255,255,255,0.95);
     color:#b23a48;
-    box-shadow:0 6px 18px rgba(0,0,0,.3);
 }
 
+/* Funny text */
 #noWrapper{ position:relative; }
 
 #funny{
@@ -72,14 +78,14 @@ html, body{
     bottom:120%;
     width:100%;
     text-align:center;
-    font-size:0.9rem;
+    font-size:0.8rem;
     color:white;
     font-style:italic;
-    text-shadow:0 0 10px black;
+    text-shadow:0 0 8px black;
     white-space:nowrap;
 }
 
-/* Success */
+/* Success screen */
 .success{
     position:fixed;
     inset:0;
@@ -93,26 +99,27 @@ html, body{
 
 .success h2{
     font-family:'Great Vibes', cursive;
-    font-size:3.5rem;
+    font-size:2.8rem;
     color:#d6336c;
 }
 
 .success img{
-    max-width:90%;
-    border-radius:20px;
+    width:85%;
+    border-radius:18px;
     margin:20px 0;
 }
 
 .success p{
-    font-size:1.4rem;
+    font-size:1.2rem;
     color:#6d2e46;
+    padding:0 20px;
 }
 
 /* Confetti */
 .confetti{
     position:fixed;
-    width:8px;
-    height:14px;
+    width:6px;
+    height:12px;
     top:-20px;
     animation:fall 3s linear forwards;
 }
@@ -124,16 +131,20 @@ html, body{
     }
 }
 
-/* 📱 Mobile Adjustments */
-@media (max-width:768px){
-    .controls{
-        top:72%;      /* slightly lower on mobile */
-        flex-direction:column;
-        gap:20px;
-    }
+/* Spark burst */
+.spark{
+    position:fixed;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    pointer-events:none;
+    animation:sparkFly 600ms ease-out forwards;
+}
 
-    .btn{
-        width:160px;
+@keyframes sparkFly{
+    to{
+        transform:translate(var(--x), var(--y));
+        opacity:0;
     }
 }
 </style>
@@ -141,7 +152,7 @@ html, body{
 
 <body>
 
-<div class="poster"></div>
+<div class="poster" id="poster"></div>
 <div class="overlay"></div>
 
 <div class="controls">
@@ -153,47 +164,61 @@ html, body{
     </div>
 </div>
 
-<audio id="popSound" src="pop.mp3"></audio>
-<audio id="celebrateSound" src="celebrate.mp3"></audio>
-
 <script>
 
-const funnyPhrases = [
-    "Nice try! 😉",
-    "Catch me first! 🏃‍♂️",
-    "Fight Bro! 🥊",
-    "I’m shy... 👉👈",
-    "Try yes! ✨",
-    "Wrong way! 😂",
-    "Almost! 💨",
-    "No chance! 🚫",
-    "Keep trying! 😜"
+/* Funny text list */
+const funnyPhrases=[
+"Nice try! 😉",
+"Catch me first! 🏃‍♂️",
+"Fight Bro! 🥊",
+"I’m shy... 👉👈",
+"Try yes! ✨",
+"Wrong way! 😂",
+"Almost! 💨",
+"No chance! 🚫",
+"Keep trying! 😜"
 ];
 
 let lastIndex=-1;
 
+/* Background images list */
+const images=[
+"image.png",
+"image1.png",
+"image2.png",
+"image3.png",
+"image4.png",
+"image5.png",
+"image6.png",
+"image7.png",
+"image8.png"
+];
+
+let currentImageIndex=0;
+
+const poster=document.getElementById("poster");
 const noWrapper=document.getElementById("noWrapper");
 const noBtn=document.getElementById("no");
 const funny=document.getElementById("funny");
-const popSound=document.getElementById("popSound");
-const celebrateSound=document.getElementById("celebrateSound");
 
-/* Move No */
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("click", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
-
+/* Move No + Change Background */
 function moveNo(){
-    popSound.currentTime=0;
-    popSound.play();
 
-    const maxX=window.innerWidth-noWrapper.offsetWidth;
-    const maxY=window.innerHeight-noWrapper.offsetHeight;
+    const padding=15;
+    const w=noWrapper.offsetWidth;
+    const h=noWrapper.offsetHeight;
+
+    const maxX=window.innerWidth-w-padding;
+    const maxY=window.innerHeight-h-padding;
+
+    const x=Math.max(padding,Math.random()*maxX);
+    const y=Math.max(padding,Math.random()*maxY);
 
     noWrapper.style.position="fixed";
-    noWrapper.style.left=Math.random()*maxX+"px";
-    noWrapper.style.top=Math.random()*maxY+"px";
+    noWrapper.style.left=x+"px";
+    noWrapper.style.top=y+"px";
 
+    /* Change funny text */
     let index;
     do{
         index=Math.floor(Math.random()*funnyPhrases.length);
@@ -201,28 +226,63 @@ function moveNo(){
 
     lastIndex=index;
     funny.innerText=funnyPhrases[index];
-}
 
-/* YES */
-document.getElementById("yes").onclick=()=>{
-    celebrateSound.play();
-
-    document.body.innerHTML=`
-        <div class="success">
-            <h2>Yay 💖</h2>
-            <img src="yay.png">
-            <p>You're the best thing of my life ❤️</p>
-        </div>
-    `;
-
-    for(let i=0;i<120;i++){
-        const conf=document.createElement("div");
-        conf.className="confetti";
-        conf.style.left=Math.random()*100+"vw";
-        conf.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#ff758c"][Math.floor(Math.random()*4)];
-        document.body.appendChild(conf);
+    /* Change background image */
+    currentImageIndex++;
+    if(currentImageIndex >= images.length){
+        currentImageIndex = 0;
     }
+
+    poster.style.backgroundImage = `url('${images[currentImageIndex]}')`;
 }
+
+noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("click", moveNo);
+
+/* YES click */
+document.getElementById("yes").addEventListener("click",(e)=>{
+
+    const rect=e.target.getBoundingClientRect();
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+
+    /* Spark burst */
+    for(let i=0;i<35;i++){
+        const spark=document.createElement("div");
+        spark.className="spark";
+        spark.style.left=centerX+"px";
+        spark.style.top=centerY+"px";
+        spark.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#fff","#ff758c"][Math.floor(Math.random()*5)];
+
+        const angle=Math.random()*2*Math.PI;
+        const dist=70+Math.random()*60;
+
+        spark.style.setProperty("--x",Math.cos(angle)*dist+"px");
+        spark.style.setProperty("--y",Math.sin(angle)*dist+"px");
+
+        document.body.appendChild(spark);
+        setTimeout(()=>spark.remove(),600);
+    }
+
+    setTimeout(()=>{
+        document.body.innerHTML=`
+            <div class="success">
+                <h2>Yay 💖</h2>
+                <img src="yay.png">
+                <p>You're the best thing of my life ❤️</p>
+            </div>
+        `;
+
+        for(let i=0;i<90;i++){
+            const conf=document.createElement("div");
+            conf.className="confetti";
+            conf.style.left=Math.random()*100+"vw";
+            conf.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#ff758c"][Math.floor(Math.random()*4)];
+            document.body.appendChild(conf);
+        }
+
+    },500);
+});
 
 </script>
 
