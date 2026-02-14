@@ -12,58 +12,55 @@ html, body{
     margin:0;
     padding:0;
     height:100%;
-    font-family: 'Georgia', serif;
+    font-family:'Georgia', serif;
     overflow:hidden;
 }
 
-/* Background Image */
+/* Background */
 .poster{
     position:fixed;
     inset:0;
     background:url('image.png') center center / cover no-repeat;
 }
 
-/* Soft overlay */
 .overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.35);
 }
 
-/* Center content */
+/* Center layout */
 .container{
     position:relative;
     height:100vh;
     display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    padding-bottom:12vh;
-}
-
-/* Buttons Row */
-.controls{
-    display:flex;
-    gap:50px;
     align-items:center;
     justify-content:center;
 }
 
-/* Romantic Buttons */
+/* Buttons row */
+.controls{
+    display:flex;
+    gap:40px;
+    align-items:center;
+    justify-content:center;
+}
+
+/* Buttons */
 .btn{
-    padding:16px 42px;
-    font-size:1.2rem;
+    padding:14px 32px;
+    font-size:1.1rem;
     border-radius:50px;
     border:none;
     font-weight:600;
-    letter-spacing:1px;
     cursor:pointer;
-    transition:all .3s ease;
+    transition:.3s ease;
 }
 
 #yes{
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     color:white;
-    box-shadow:0 10px 30px rgba(255,118,150,.5);
+    box-shadow:0 8px 25px rgba(255,118,150,.5);
 }
 
 #yes:hover{ transform:scale(1.05); }
@@ -71,27 +68,24 @@ html, body{
 #no{
     background:rgba(255,255,255,0.9);
     color:#b23a48;
-    box-shadow:0 8px 20px rgba(0,0,0,.3);
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
 }
 
-#noWrapper{
-    position:relative;
-}
+#noWrapper{ position:relative; }
 
-/* Funny text above No */
 #funny{
     position:absolute;
     bottom:120%;
     width:100%;
     text-align:center;
-    font-size:0.95rem;
+    font-size:0.9rem;
     color:white;
     font-style:italic;
-    text-shadow:0 0 15px black;
+    text-shadow:0 0 10px black;
     white-space:nowrap;
 }
 
-/* Success Screen */
+/* Success */
 .success{
     position:fixed;
     inset:0;
@@ -106,35 +100,48 @@ html, body{
 
 .success h2{
     font-family:'Great Vibes', cursive;
-    font-size:4rem;
+    font-size:3rem;
     color:#d6336c;
-    margin:0 0 20px 0;
 }
 
 .success img{
-    max-width:450px;
-    width:90%;
+    max-width:90%;
     border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.3);
-    margin-bottom:25px;
+    margin:20px 0;
 }
 
 .success p{
-    font-size:1.6rem;
+    font-size:1.3rem;
     color:#6d2e46;
-    font-weight:600;
 }
 
-/* Floating hearts */
-@keyframes float{
-    0%{transform:translateY(0);opacity:1;}
-    100%{transform:translateY(-120vh);opacity:0;}
-}
-
-.floatHeart{
+/* Confetti */
+.confetti{
     position:fixed;
-    bottom:-20px;
-    animation:float 4s linear forwards;
+    width:8px;
+    height:14px;
+    top:-20px;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
+}
+
+/* 📱 MOBILE FIX */
+@media (max-width:768px){
+    .controls{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .btn{
+        width:160px;
+        font-size:1rem;
+    }
 }
 </style>
 </head>
@@ -155,6 +162,9 @@ html, body{
     </div>
 </div>
 
+<audio id="popSound" src="pop.mp3"></audio>
+<audio id="celebrateSound" src="celebrate.mp3"></audio>
+
 <script>
 
 const funnyPhrases = [
@@ -167,61 +177,61 @@ const funnyPhrases = [
     "😤",
     "Almost! 💨",
     "No chance! 🚫",
-    "Keep trying! 😜",
-    "Destiny says Yes 😌",
-    "You missed the right button 😏",
-    "Love prefers Yes 💕",
-    "Oops, try again 😆",
-    "That button doesn't work 🤭",
-    "The Yes one is prettier 💖"
+    "Keep trying! 😜"
 ];
 
-let lastIndex = -1;
+let lastIndex=-1;
 
-const noWrapper = document.getElementById("noWrapper");
-const noBtn = document.getElementById("no");
-const funny = document.getElementById("funny");
+const noWrapper=document.getElementById("noWrapper");
+const noBtn=document.getElementById("no");
+const funny=document.getElementById("funny");
+const popSound=document.getElementById("popSound");
+const celebrateSound=document.getElementById("celebrateSound");
 
-noBtn.addEventListener("mouseover", moveNo);
+/* Mobile + Desktop support */
 noBtn.addEventListener("click", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
 function moveNo(){
-    const maxX = window.innerWidth - noWrapper.offsetWidth;
-    const maxY = window.innerHeight - noWrapper.offsetHeight;
+    popSound.currentTime=0;
+    popSound.play();
+
+    const maxX=window.innerWidth-noWrapper.offsetWidth;
+    const maxY=window.innerHeight-noWrapper.offsetHeight;
 
     noWrapper.style.position="fixed";
     noWrapper.style.left=Math.random()*maxX+"px";
     noWrapper.style.top=Math.random()*maxY+"px";
 
     let index;
-    do {
-        index = Math.floor(Math.random() * funnyPhrases.length);
-    } while(index === lastIndex);
+    do{
+        index=Math.floor(Math.random()*funnyPhrases.length);
+    }while(index===lastIndex);
 
-    lastIndex = index;
-    funny.innerText = funnyPhrases[index];
+    lastIndex=index;
+    funny.innerText=funnyPhrases[index];
 }
 
-/* YES CLICK */
-document.getElementById("yes").onclick = () => {
-    document.body.innerHTML = `
+/* YES */
+document.getElementById("yes").onclick=()=>{
+    celebrateSound.play();
+
+    document.body.innerHTML=`
         <div class="success">
             <h2>Yay 💖</h2>
-            <img src="yay.png" alt="Love Image">
+            <img src="yay.png">
             <p>You're the best thing of my life ❤️</p>
         </div>
     `;
 
-    for(let i=0;i<50;i++){
-        const h=document.createElement("div");
-        h.className="floatHeart";
-        h.style.left=Math.random()*100+"vw";
-        h.style.fontSize=(18+Math.random()*30)+"px";
-        h.innerText="💖";
-        document.body.appendChild(h);
+    for(let i=0;i<120;i++){
+        const conf=document.createElement("div");
+        conf.className="confetti";
+        conf.style.left=Math.random()*100+"vw";
+        conf.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#ff758c"][Math.floor(Math.random()*4)];
+        document.body.appendChild(conf);
     }
 }
-
 </script>
 
 </body>
