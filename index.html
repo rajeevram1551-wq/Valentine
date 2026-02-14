@@ -16,39 +16,31 @@ html, body{
     overflow:hidden;
 }
 
-/* Background */
+/* Background Image */
 .poster{
     position:fixed;
     inset:0;
     background:url('image.png') center center / cover no-repeat;
 }
 
+/* Soft overlay */
 .overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.35);
 }
 
+/* Center content */
 .container{
     position:relative;
     height:100vh;
     display:flex;
-    align-items:center;
+    align-items:flex-end;
     justify-content:center;
-    flex-direction:column;
-    text-align:center;
-    color:white;
+    padding-bottom:12vh;
 }
 
-h1{
-    font-family: 'Great Vibes', cursive;
-    font-size:4.5rem;
-    font-weight:normal;
-    margin-bottom:60px;
-    letter-spacing:2px;
-    text-shadow:0 0 25px rgba(0,0,0,0.7);
-}
-
+/* Buttons Row */
 .controls{
     display:flex;
     gap:50px;
@@ -56,6 +48,7 @@ h1{
     justify-content:center;
 }
 
+/* Romantic Buttons */
 .btn{
     padding:16px 42px;
     font-size:1.2rem;
@@ -81,8 +74,11 @@ h1{
     box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
 
-#noWrapper{ position:relative; }
+#noWrapper{
+    position:relative;
+}
 
+/* Funny text above No */
 #funny{
     position:absolute;
     bottom:120%;
@@ -149,8 +145,6 @@ h1{
 <div class="overlay"></div>
 
 <div class="container">
-    <h1>Will You Be My Valentine? 💖</h1>
-
     <div class="controls">
         <button id="yes" class="btn">Yes</button>
 
@@ -163,7 +157,6 @@ h1{
 
 <script>
 
-/* Funny Texts */
 const funnyPhrases = [
     "Nice try! 😉",
     "Catch me first! 🏃‍♂️",
