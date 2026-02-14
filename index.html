@@ -23,29 +23,26 @@ html, body{
     background-position:center;
     background-repeat:no-repeat;
     transition:background-image .4s ease;
-    z-index:0;
 }
 
 .overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.25);
-    z-index:1;
 }
 
-/* Controls container */
+/* Controls */
 .controls{
     position:fixed;
     inset:0;
-    z-index:2;
 }
 
-/* YES button */
+/* YES */
 #yes{
     position:absolute;
     top:80%;
     left:45%;
-    transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%) scale(1);
     padding:14px 28px;
     font-size:1rem;
     border-radius:40px;
@@ -54,6 +51,7 @@ html, body{
     cursor:pointer;
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     color:white;
+    transition:transform .3s ease;
     animation:pulse 2s infinite;
 }
 
@@ -63,14 +61,14 @@ html, body{
     100%{box-shadow:0 0 8px rgba(255,118,150,.6);}
 }
 
-/* NO button */
+/* NO */
 #noWrapper{
     position:absolute;
     top:80%;
     left:55%;
     transform:translate(-50%,-50%);
-    transition:left 0.45s cubic-bezier(.25,.8,.25,1),
-               top 0.45s cubic-bezier(.25,.8,.25,1);
+    transition:left .45s cubic-bezier(.25,.8,.25,1),
+               top .45s cubic-bezier(.25,.8,.25,1);
 }
 
 #no{
@@ -92,6 +90,56 @@ html, body{
     font-size:0.8rem;
     color:white;
     text-shadow:0 0 8px black;
+}
+
+/* Rockets */
+.rocket{
+    position:fixed;
+    bottom:0;
+    width:4px;
+    height:20px;
+    background:white;
+    animation:launch 1s ease-out forwards;
+}
+
+@keyframes launch{
+    to{
+        transform:translateY(-90vh);
+        opacity:0;
+    }
+}
+
+/* Firework explosion */
+.firework{
+    position:fixed;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    pointer-events:none;
+    animation:explode 1s ease-out forwards;
+}
+
+@keyframes explode{
+    to{
+        transform:translate(var(--x), var(--y));
+        opacity:0;
+    }
+}
+
+/* Confetti */
+.confetti{
+    position:fixed;
+    width:8px;
+    height:14px;
+    top:-20px;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
 }
 </style>
 </head>
@@ -126,6 +174,7 @@ const funnyPhrases=[
 ];
 
 let lastIndex=-1;
+let yesScale=1;
 
 /* Background images */
 const images=[
@@ -146,8 +195,9 @@ const poster=document.getElementById("poster");
 const noWrapper=document.getElementById("noWrapper");
 const noBtn=document.getElementById("no");
 const funny=document.getElementById("funny");
+const yesBtn=document.getElementById("yes");
 
-/* Glide movement inside center 80% */
+/* Glide No inside 80% safe area */
 function moveNo(){
 
     const screenW=window.innerWidth;
@@ -156,20 +206,20 @@ function moveNo(){
     const w=noWrapper.offsetWidth;
     const h=noWrapper.offsetHeight;
 
-    const minX=screenW * 0.10;
-    const maxX=screenW * 0.90 - w;
+    const minX=screenW*0.10;
+    const maxX=screenW*0.90 - w;
 
-    const minY=screenH * 0.10;
-    const maxY=screenH * 0.90 - h;
+    const minY=screenH*0.10;
+    const maxY=screenH*0.90 - h;
 
-    const x=minX + Math.random()*(maxX - minX);
-    const y=minY + Math.random()*(maxY - minY);
+    const x=minX + Math.random()*(maxX-minX);
+    const y=minY + Math.random()*(maxY-minY);
 
     noWrapper.style.left=x+"px";
     noWrapper.style.top=y+"px";
     noWrapper.style.transform="none";
 
-    /* Change funny text */
+    /* Funny text */
     let idx;
     do{
         idx=Math.floor(Math.random()*funnyPhrases.length);
@@ -180,32 +230,91 @@ function moveNo(){
     /* Change background */
     currentImageIndex=(currentImageIndex+1)%images.length;
     poster.style.backgroundImage=`url('${images[currentImageIndex]}')`;
+
+    /* YES grows */
+    yesScale += 0.05;
+    yesBtn.style.transform=`translate(-50%,-50%) scale(${yesScale})`;
 }
 
 noBtn.addEventListener("click", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
-/* YES */
-document.getElementById("yes").addEventListener("click",()=>{
-    document.body.innerHTML=`
-    <div style="
-        position:fixed;
-        inset:0;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        background:linear-gradient(to bottom,#fff0f3,#ffe4ec);
-        text-align:center;
-        padding:20px;
-    ">
-        <h2 style="font-size:2.8rem;color:#d6336c;">Yay 💖</h2>
-        <img src="yay.png" style="width:85%;border-radius:18px;margin:20px 0;">
-        <p style="font-size:1.3rem;color:#6d2e46;">
-            You're the best thing of my life ❤️
-        </p>
-    </div>
-    `;
+/* YES click – Fireworks + Confetti */
+yesBtn.addEventListener("click",()=>{
+
+    const colors=["#ff4d6d","#ff85a1","#ffd6e0","#fff","#ff758c"];
+
+    /* Launch rockets */
+    for(let r=0;r<3;r++){
+
+        const rocket=document.createElement("div");
+        rocket.className="rocket";
+
+        const startX=Math.random()*window.innerWidth;
+        rocket.style.left=startX+"px";
+
+        document.body.appendChild(rocket);
+
+        setTimeout(()=>{
+
+            const topY=window.innerHeight*0.2 + Math.random()*100;
+
+            for(let i=0;i<40;i++){
+                const particle=document.createElement("div");
+                particle.className="firework";
+                particle.style.left=startX+"px";
+                particle.style.top=topY+"px";
+                particle.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+                const angle=Math.random()*2*Math.PI;
+                const dist=80+Math.random()*100;
+
+                particle.style.setProperty("--x",Math.cos(angle)*dist+"px");
+                particle.style.setProperty("--y",Math.sin(angle)*dist+"px");
+
+                document.body.appendChild(particle);
+                setTimeout(()=>particle.remove(),1000);
+            }
+
+            rocket.remove();
+
+        },900);
+    }
+
+    /* Show success screen after fireworks */
+    setTimeout(()=>{
+
+        document.body.innerHTML=`
+        <div style="
+            position:fixed;
+            inset:0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            background:linear-gradient(to bottom,#fff0f3,#ffe4ec);
+            text-align:center;
+            padding:20px;
+        ">
+            <h2 style="font-size:2.8rem;color:#d6336c;">Yay 💖</h2>
+            <img src="yay.png" style="width:85%;border-radius:18px;margin:20px 0;">
+            <p style="font-size:1.3rem;color:#6d2e46;">
+                You're the best thing of my life ❤️
+            </p>
+        </div>
+        `;
+
+        /* Confetti rain */
+        for(let i=0;i<120;i++){
+            const conf=document.createElement("div");
+            conf.className="confetti";
+            conf.style.left=Math.random()*100+"vw";
+            conf.style.background=colors[Math.floor(Math.random()*colors.length)];
+            document.body.appendChild(conf);
+        }
+
+    },2000);
+
 });
 
 </script>
