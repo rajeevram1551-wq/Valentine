@@ -12,8 +12,8 @@ html, body{
     margin:0;
     padding:0;
     height:100%;
-    font-family:'Georgia', serif;
     overflow:hidden;
+    font-family:'Georgia', serif;
 }
 
 /* Background */
@@ -23,32 +23,26 @@ html, body{
     background:url('image.png') center center / cover no-repeat;
 }
 
+/* Slight dark overlay */
 .overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.35);
+    background:rgba(0,0,0,0.25);
 }
 
-/* Center layout */
-.container{
-    position:relative;
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-/* Buttons row */
+/* 🎯 Position Buttons Below Faces */
 .controls{
+    position:absolute;
+    top:68%;          /* <-- Adjust this if needed */
+    left:50%;
+    transform:translate(-50%, -50%);
     display:flex;
     gap:40px;
-    align-items:center;
-    justify-content:center;
 }
 
 /* Buttons */
 .btn{
-    padding:14px 32px;
+    padding:14px 34px;
     font-size:1.1rem;
     border-radius:50px;
     border:none;
@@ -63,7 +57,7 @@ html, body{
     box-shadow:0 8px 25px rgba(255,118,150,.5);
 }
 
-#yes:hover{ transform:scale(1.05); }
+#yes:hover{ transform:scale(1.08); }
 
 #no{
     background:rgba(255,255,255,0.9);
@@ -95,12 +89,11 @@ html, body{
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:20px;
 }
 
 .success h2{
     font-family:'Great Vibes', cursive;
-    font-size:3rem;
+    font-size:3.5rem;
     color:#d6336c;
 }
 
@@ -111,7 +104,7 @@ html, body{
 }
 
 .success p{
-    font-size:1.3rem;
+    font-size:1.4rem;
     color:#6d2e46;
 }
 
@@ -131,16 +124,16 @@ html, body{
     }
 }
 
-/* 📱 MOBILE FIX */
+/* 📱 Mobile Adjustments */
 @media (max-width:768px){
     .controls{
+        top:72%;      /* slightly lower on mobile */
         flex-direction:column;
         gap:20px;
     }
 
     .btn{
         width:160px;
-        font-size:1rem;
     }
 }
 </style>
@@ -151,14 +144,12 @@ html, body{
 <div class="poster"></div>
 <div class="overlay"></div>
 
-<div class="container">
-    <div class="controls">
-        <button id="yes" class="btn">Yes</button>
+<div class="controls">
+    <button id="yes" class="btn">Yes</button>
 
-        <div id="noWrapper">
-            <div id="funny"></div>
-            <button id="no" class="btn">No</button>
-        </div>
+    <div id="noWrapper">
+        <div id="funny"></div>
+        <button id="no" class="btn">No</button>
     </div>
 </div>
 
@@ -174,7 +165,6 @@ const funnyPhrases = [
     "I’m shy... 👉👈",
     "Try yes! ✨",
     "Wrong way! 😂",
-    "😤",
     "Almost! 💨",
     "No chance! 🚫",
     "Keep trying! 😜"
@@ -188,7 +178,8 @@ const funny=document.getElementById("funny");
 const popSound=document.getElementById("popSound");
 const celebrateSound=document.getElementById("celebrateSound");
 
-/* Mobile + Desktop support */
+/* Move No */
+noBtn.addEventListener("mouseover", moveNo);
 noBtn.addEventListener("click", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
@@ -232,6 +223,7 @@ document.getElementById("yes").onclick=()=>{
         document.body.appendChild(conf);
     }
 }
+
 </script>
 
 </body>
