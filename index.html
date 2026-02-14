@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine?</title>
 
 <style>
@@ -33,29 +33,25 @@ html, body{
     z-index:1;
 }
 
-/* Controls */
+/* Controls container */
 .controls{
     position:fixed;
-    top:80%;
-    left:50%;
-    transform:translate(-50%, -50%);
-    display:flex;
-    gap:25px;
+    inset:0;
     z-index:2;
 }
 
-.btn{
+/* YES button */
+#yes{
+    position:absolute;
+    top:80%;
+    left:45%;
+    transform:translate(-50%,-50%);
     padding:14px 28px;
     font-size:1rem;
     border-radius:40px;
     border:none;
     font-weight:600;
-    min-width:110px;
     cursor:pointer;
-}
-
-/* YES pulse */
-#yes{
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
     color:white;
     animation:pulse 2s infinite;
@@ -67,13 +63,25 @@ html, body{
     100%{box-shadow:0 0 8px rgba(255,118,150,.6);}
 }
 
-#no{
-    background:rgba(255,255,255,0.95);
-    color:#b23a48;
+/* NO button */
+#noWrapper{
+    position:absolute;
+    top:80%;
+    left:55%;
+    transform:translate(-50%,-50%);
+    transition:left 0.45s cubic-bezier(.25,.8,.25,1),
+               top 0.45s cubic-bezier(.25,.8,.25,1);
 }
 
-#noWrapper{
-    position:relative;
+#no{
+    padding:14px 28px;
+    font-size:1rem;
+    border-radius:40px;
+    border:none;
+    font-weight:600;
+    background:rgba(255,255,255,0.95);
+    color:#b23a48;
+    cursor:pointer;
 }
 
 #funny{
@@ -93,12 +101,12 @@ html, body{
 <div id="poster"></div>
 <div class="overlay"></div>
 
-<div class="controls" id="controls">
-    <button id="yes" class="btn">Yes</button>
+<div class="controls">
+    <button id="yes">Yes</button>
 
     <div id="noWrapper">
         <div id="funny"></div>
-        <button id="no" class="btn">No</button>
+        <button id="no">No</button>
     </div>
 </div>
 
@@ -135,33 +143,41 @@ const images=[
 let currentImageIndex=0;
 
 const poster=document.getElementById("poster");
-const noBtn=document.getElementById("no");
 const noWrapper=document.getElementById("noWrapper");
+const noBtn=document.getElementById("no");
 const funny=document.getElementById("funny");
 
-/* Move safely using transform */
+/* Glide movement inside center 80% */
 function moveNo(){
 
-    const padding=40;
+    const screenW=window.innerWidth;
+    const screenH=window.innerHeight;
 
-    const maxX=window.innerWidth - noWrapper.offsetWidth - padding;
-    const maxY=window.innerHeight - noWrapper.offsetHeight - padding;
+    const w=noWrapper.offsetWidth;
+    const h=noWrapper.offsetHeight;
 
-    const x=Math.random()*maxX - maxX/2;
-    const y=Math.random()*maxY - maxY/2;
+    const minX=screenW * 0.10;
+    const maxX=screenW * 0.90 - w;
 
-    noWrapper.style.transform=`translate(${x}px, ${y}px)`;
+    const minY=screenH * 0.10;
+    const maxY=screenH * 0.90 - h;
+
+    const x=minX + Math.random()*(maxX - minX);
+    const y=minY + Math.random()*(maxY - minY);
+
+    noWrapper.style.left=x+"px";
+    noWrapper.style.top=y+"px";
+    noWrapper.style.transform="none";
 
     /* Change funny text */
-    let index;
+    let idx;
     do{
-        index=Math.floor(Math.random()*funnyPhrases.length);
-    }while(index===lastIndex);
+        idx=Math.floor(Math.random()*funnyPhrases.length);
+    }while(idx===lastIndex);
+    lastIndex=idx;
+    funny.innerText=funnyPhrases[idx];
 
-    lastIndex=index;
-    funny.innerText=funnyPhrases[index];
-
-    /* Change background safely */
+    /* Change background */
     currentImageIndex=(currentImageIndex+1)%images.length;
     poster.style.backgroundImage=`url('${images[currentImageIndex]}')`;
 }
@@ -172,21 +188,23 @@ noBtn.addEventListener("touchstart", moveNo);
 /* YES */
 document.getElementById("yes").addEventListener("click",()=>{
     document.body.innerHTML=`
-        <div style="
-            position:fixed;
-            inset:0;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            background:linear-gradient(to bottom,#fff0f3,#ffe4ec);
-            text-align:center;">
-            <h2 style="font-size:2.5rem;color:#d6336c;">Yay 💖</h2>
-            <img src="yay.png" style="width:85%;border-radius:20px;margin:20px 0;">
-            <p style="font-size:1.2rem;color:#6d2e46;">
-                You're the best thing of my life ❤️
-            </p>
-        </div>
+    <div style="
+        position:fixed;
+        inset:0;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        background:linear-gradient(to bottom,#fff0f3,#ffe4ec);
+        text-align:center;
+        padding:20px;
+    ">
+        <h2 style="font-size:2.8rem;color:#d6336c;">Yay 💖</h2>
+        <img src="yay.png" style="width:85%;border-radius:18px;margin:20px 0;">
+        <p style="font-size:1.3rem;color:#6d2e46;">
+            You're the best thing of my life ❤️
+        </p>
+    </div>
     `;
 });
 
