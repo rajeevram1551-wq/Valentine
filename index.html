@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Be My Valentine?</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
@@ -14,14 +14,16 @@ html, body{
     height:100%;
     overflow:hidden;
     font-family:'Georgia', serif;
-    touch-action:manipulation;
 }
 
 /* Background */
-.poster{
+#poster{
     position:fixed;
     inset:0;
-    background:url('image.png') center center / cover no-repeat;
+    background-image:url('image.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
     transition:background-image 0.4s ease-in-out;
 }
 
@@ -41,7 +43,6 @@ html, body{
     gap:25px;
 }
 
-/* Buttons */
 .btn{
     padding:14px 28px;
     font-size:1rem;
@@ -70,7 +71,6 @@ html, body{
     color:#b23a48;
 }
 
-/* Funny text */
 #noWrapper{ position:relative; }
 
 #funny{
@@ -85,7 +85,7 @@ html, body{
     white-space:nowrap;
 }
 
-/* Success screen */
+/* Success */
 .success{
     position:fixed;
     inset:0;
@@ -112,47 +112,13 @@ html, body{
 .success p{
     font-size:1.2rem;
     color:#6d2e46;
-    padding:0 20px;
-}
-
-/* Confetti */
-.confetti{
-    position:fixed;
-    width:6px;
-    height:12px;
-    top:-20px;
-    animation:fall 3s linear forwards;
-}
-
-@keyframes fall{
-    to{
-        transform:translateY(110vh) rotate(720deg);
-        opacity:0;
-    }
-}
-
-/* Spark burst */
-.spark{
-    position:fixed;
-    width:5px;
-    height:5px;
-    border-radius:50%;
-    pointer-events:none;
-    animation:sparkFly 600ms ease-out forwards;
-}
-
-@keyframes sparkFly{
-    to{
-        transform:translate(var(--x), var(--y));
-        opacity:0;
-    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="poster" id="poster"></div>
+<div id="poster"></div>
 <div class="overlay"></div>
 
 <div class="controls">
@@ -166,7 +132,7 @@ html, body{
 
 <script>
 
-/* Funny text list */
+/* Funny phrases */
 const funnyPhrases=[
 "Nice try! 😉",
 "Catch me first! 🏃‍♂️",
@@ -181,7 +147,7 @@ const funnyPhrases=[
 
 let lastIndex=-1;
 
-/* Background images list */
+/* Background images */
 const images=[
 "image.png",
 "image1.png",
@@ -201,15 +167,24 @@ const noWrapper=document.getElementById("noWrapper");
 const noBtn=document.getElementById("no");
 const funny=document.getElementById("funny");
 
-/* Move No + Change Background */
+/* Safe viewport size (mobile reliable) */
+function getViewportHeight(){
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+}
+
+/* Move No safely */
 function moveNo(){
 
-    const padding=15;
+    const padding=20;
+
     const w=noWrapper.offsetWidth;
     const h=noWrapper.offsetHeight;
 
-    const maxX=window.innerWidth-w-padding;
-    const maxY=window.innerHeight-h-padding;
+    const viewportWidth=window.innerWidth;
+    const viewportHeight=getViewportHeight();
+
+    const maxX=viewportWidth-w-padding;
+    const maxY=viewportHeight-h-padding;
 
     const x=Math.max(padding,Math.random()*maxX);
     const y=Math.max(padding,Math.random()*maxY);
@@ -227,63 +202,24 @@ function moveNo(){
     lastIndex=index;
     funny.innerText=funnyPhrases[index];
 
-    /* Change background image */
-    currentImageIndex++;
-    if(currentImageIndex >= images.length){
-        currentImageIndex = 0;
-    }
-
-    poster.style.backgroundImage = `url('${images[currentImageIndex]}')`;
+    /* Change background */
+    currentImageIndex=(currentImageIndex+1)%images.length;
+    poster.style.backgroundImage="url('"+images[currentImageIndex]+"')";
 }
 
 noBtn.addEventListener("touchstart", moveNo);
 noBtn.addEventListener("click", moveNo);
 
-/* YES click */
-document.getElementById("yes").addEventListener("click",(e)=>{
-
-    const rect=e.target.getBoundingClientRect();
-    const centerX=rect.left+rect.width/2;
-    const centerY=rect.top+rect.height/2;
-
-    /* Spark burst */
-    for(let i=0;i<35;i++){
-        const spark=document.createElement("div");
-        spark.className="spark";
-        spark.style.left=centerX+"px";
-        spark.style.top=centerY+"px";
-        spark.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#fff","#ff758c"][Math.floor(Math.random()*5)];
-
-        const angle=Math.random()*2*Math.PI;
-        const dist=70+Math.random()*60;
-
-        spark.style.setProperty("--x",Math.cos(angle)*dist+"px");
-        spark.style.setProperty("--y",Math.sin(angle)*dist+"px");
-
-        document.body.appendChild(spark);
-        setTimeout(()=>spark.remove(),600);
-    }
-
-    setTimeout(()=>{
-        document.body.innerHTML=`
-            <div class="success">
-                <h2>Yay 💖</h2>
-                <img src="yay.png">
-                <p>You're the best thing of my life ❤️</p>
-            </div>
-        `;
-
-        for(let i=0;i<90;i++){
-            const conf=document.createElement("div");
-            conf.className="confetti";
-            conf.style.left=Math.random()*100+"vw";
-            conf.style.background=["#ff4d6d","#ff85a1","#ffd6e0","#ff758c"][Math.floor(Math.random()*4)];
-            document.body.appendChild(conf);
-        }
-
-    },500);
+/* YES */
+document.getElementById("yes").addEventListener("click",()=>{
+    document.body.innerHTML=`
+        <div class="success">
+            <h2>Yay 💖</h2>
+            <img src="yay.png">
+            <p>You're the best thing of my life ❤️</p>
+        </div>
+    `;
 });
-
 </script>
 
 </body>
